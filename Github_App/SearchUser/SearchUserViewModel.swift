@@ -120,7 +120,6 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                             usersItem.append(item)
                         }
                         users.accept(usersItem)
-                        print(users.value)
                     } catch {
                         print("error:")
                         print(error)

@@ -128,7 +128,6 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                             usersItem.append(item)
                         }
                         users.accept(usersItem)
-                        print(users.value)
                     } catch {
                         print("error:")
                         print(error)

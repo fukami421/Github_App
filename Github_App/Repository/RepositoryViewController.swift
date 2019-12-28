@@ -34,7 +34,7 @@ class RepositoryViewController: UIViewController {
 
         // self.titleに表示されている値をViewModelにbind
         self.userName
-            .bind(to: self.viewModel.userName)
+            .bind(to: self.viewModel.inputs.userName)
             .disposed(by: self.disposeBag)
         
         // 検索結果をtableのcellにbind
@@ -42,8 +42,9 @@ class RepositoryViewController: UIViewController {
             .filter{ $0.count > 0 }
             .bind(to: self.tableView.rx.items){tableView, row, element in
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "myCell")
-                cell.textLabel?.text = element.name                
+                cell.textLabel?.text = element.name
                 return cell
         }
-        .disposed(by: self.disposeBag)    }
+        .disposed(by: self.disposeBag)
+    }
 }

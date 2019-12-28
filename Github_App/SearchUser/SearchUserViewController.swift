@@ -14,7 +14,6 @@ class SearchUserViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
-    fileprivate let repositoryVC = RepositoryViewController.init(nibName: nil, bundle: nil)
 
     fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
     private let disposeBag = DisposeBag()
@@ -65,8 +64,11 @@ class SearchUserViewController: UIViewController {
         // 選択されたユーザーのリポジトリを表示するViewに遷移
         self.viewModel.userName
             .bind(to: Binder(self) { _, name in
-                self.repositoryVC.title = name // 遷移先のViewのtitleをユーザー名にする
-                self.navigationController?.pushViewController(self.repositoryVC, animated: true) //遷移する
+                var repositoryVC: RepositoryViewController? = RepositoryViewController.init(nibName: nil, bundle: nil)
+
+                repositoryVC!.title = name // 遷移先のViewのtitleをユーザー名にする
+                self.navigationController?.pushViewController(repositoryVC!, animated: true) //遷移する
+                repositoryVC = nil // メモリリークを防ぐ
             })
             .disposed(by: disposeBag)
     }
