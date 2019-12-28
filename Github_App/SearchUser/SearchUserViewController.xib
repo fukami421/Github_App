@@ -10,6 +10,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="Github_App" customModuleProvider="target">
             <connections>
                 <outlet property="searchBar" destination="uM0-hM-hjf" id="KFB-Os-i0z"/>
+                <outlet property="tableView" destination="S2b-c2-544" id="yY5-Rg-ZD6"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

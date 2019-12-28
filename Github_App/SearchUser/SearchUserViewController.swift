@@ -11,24 +11,19 @@ import RxSwift
 import RxCocoa
 
 class SearchUserViewController: UIViewController {
-    fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
+    // MARK: - Properties
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
-    
+
+    fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
     private let disposeBag = DisposeBag()
     
-//    init(viewModel: Input & Output = SearchUserViewModel()) {
-//        self.input = viewModel
-//        self.output = viewModel
-//        super.init(nibName: nil, bundle: nil)
-//        print("initされたよ")
-//    }
-    
-    
+    // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModel()
         self.title = "Search User"
+        self.tableView.register(UINib(nibName: "UsersTableViewCell", bundle: nil), forCellReuseIdentifier: "UsersTableViewCell")
     }
     
     private func bindViewModel()
@@ -38,9 +33,27 @@ class SearchUserViewController: UIViewController {
             .bind(to: self.viewModel.inputs.searchText)
             .disposed(by: self.disposeBag)
         
+        // 検索結果の個数をtitleにbind
         self.viewModel.searchResultText
             .bind(to: self.rx.title)
-            .disposed(by: disposeBag)        
+            .disposed(by: disposeBag)
+        
+        // 検索結果をtableのcellにbind
+        self.viewModel.outputs.users
+            .filter{ $0.count > 0 }
+            .bind(to: self.tableView.rx.items){tableView, row, element in
+                let cell: UsersTableViewCell = tableView.dequeueReusableCell(withIdentifier: "UsersTableViewCell")! as! UsersTableViewCell
+                cell.userNameLbl.text = element.login
+                let url = URL(string: element.avatar_url)
+                do {
+                    let data = try Data(contentsOf: url!)
+                    cell.avatarImg.image = UIImage(data: data)
+                }catch let err {
+                     print("Error : \(err.localizedDescription)")
+                }
+                return cell
         }
+        .disposed(by: self.disposeBag)
     }
 }
+

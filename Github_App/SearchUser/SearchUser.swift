@@ -15,6 +15,7 @@ struct SearchUser: Codable {
 //    var id: Int
     struct Item: Codable{
         let login: String
+        let avatar_url: String
     }
 //    enum CodingKeys: String, CodingKey {
 //        case total_count

@@ -67,10 +67,11 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
 
 
         let _searchResultText = BehaviorRelay<String>(value: "Github Search API")
-        self.searchResultText = _searchResultText.asObservable().map{"検索結果: " + $0 + "件"}
+        self.searchResultText = _searchResultText.asObservable().map{"User検索結果: " + $0 + "件"}
         
         // APIへのリクエスト
         _searchText
+            .filter{ $0.count > 0 }
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
                 self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText)
