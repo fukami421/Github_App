@@ -12,7 +12,7 @@ class TabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let seachVC = UINavigationController(rootViewController: SearchViewController.init(nibName: nil, bundle: nil))
+        let seachVC = UINavigationController(rootViewController: SearchUserViewController.init(nibName: nil, bundle: nil))
         // タブのFooter部分を設定
         seachVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
 //

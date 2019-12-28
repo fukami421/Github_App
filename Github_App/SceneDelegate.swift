@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SwiftUI
+//import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,12 +21,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view that provides the window contents.
 //        let contentView = ContentView()
-//        let tabBarVC = TabBarViewController.init(nibName: nil, bundle: nil)
+        let tabBarVC = TabBarViewController.init(nibName: nil, bundle: nil)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UINavigationController(rootViewController: LoginViewController.init(nibName: nil, bundle: nil))
+//            window.rootViewController = UINavigationController(rootViewController: LoginViewController.init(nibName: nil, bundle: nil))
+            window.rootViewController = tabBarVC
             self.window = window
             window.makeKeyAndVisible()
         }
