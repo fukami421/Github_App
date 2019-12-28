@@ -51,6 +51,7 @@ class SearchUserViewController: UIViewController {
                 }catch let err {
                      print("Error : \(err.localizedDescription)")
                 }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 return cell
         }
         .disposed(by: self.disposeBag)
