@@ -11,19 +11,39 @@ import RxSwift
 import RxCocoa
 
 class RepositoryViewController: UIViewController {
-        // MARK: - Properties
-        fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
-        private let disposeBag = DisposeBag()
+    // MARK: - Properties
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView!
+    public var userName = BehaviorRelay<String>(value: "")
+    fileprivate let viewModel: RepositoryViewModel = RepositoryViewModel()
+    private let disposeBag = DisposeBag()
         
-        // MARK: - Functions
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            self.bindViewModel()
-//            self.title = ""
-        }
-        
-        private func bindViewModel()
-        {
-        }
+    // MARK: - Functions
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.userName.accept(self.title!)
+        self.bindViewModel()
     }
+    
+    private func bindViewModel()
+    {
+        // SearchBarの入力値をViewModelにbind
+        self.searchBar.rx.text
+            .bind(to: self.viewModel.inputs.searchText)
+            .disposed(by: self.disposeBag)
 
+        // self.titleに表示されている値をViewModelにbind
+        self.userName
+            .bind(to: self.viewModel.userName)
+            .disposed(by: self.disposeBag)
+        
+        // 検索結果をtableのcellにbind
+        self.viewModel.outputs.repositories
+            .filter{ $0.count > 0 }
+            .bind(to: self.tableView.rx.items){tableView, row, element in
+                let cell = UITableViewCell(style: .default, reuseIdentifier: "myCell")
+                cell.textLabel?.text = element.name                
+                return cell
+        }
+        .disposed(by: self.disposeBag)    }
+}

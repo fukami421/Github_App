@@ -113,9 +113,9 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                     }
                     let decoder = JSONDecoder()
                     do {
-                        let tasks: SearchUser = try decoder.decode(SearchUser.self, from: data)
-                        searchResult.accept(String(tasks.total_count))
-                        for item in tasks.items
+                        let items: SearchUser = try decoder.decode(SearchUser.self, from: data)
+                        searchResult.accept(String(items.total_count))
+                        for item in items.items
                         {
                             usersItem.append(item)
                         }

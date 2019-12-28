@@ -27,19 +27,19 @@
                     <textInputTraits key="textInputTraits"/>
                 </searchBar>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="S2b-c2-544">
-                    <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                    <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 </tableView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="S2b-c2-544" secondAttribute="bottom" id="23D-YM-RTA"/>
                 <constraint firstItem="uM0-hM-hjf" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="4iW-2v-9tz"/>
                 <constraint firstItem="uM0-hM-hjf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="CLC-7w-D62"/>
                 <constraint firstItem="S2b-c2-544" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="FOc-vo-Ssb"/>
                 <constraint firstItem="S2b-c2-544" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="VQ5-EW-oSD"/>
                 <constraint firstItem="S2b-c2-544" firstAttribute="top" secondItem="uM0-hM-hjf" secondAttribute="bottom" id="abi-Um-euZ"/>
                 <constraint firstItem="uM0-hM-hjf" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="hNY-lO-MmM"/>
+                <constraint firstItem="S2b-c2-544" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="pWN-2r-PeX"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="137.68115942028987" y="141.96428571428569"/>

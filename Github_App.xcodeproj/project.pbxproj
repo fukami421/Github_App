@@ -24,6 +24,8 @@
 		38E8DA1123B737EC008674BF /* UsersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E8DA0F23B737EC008674BF /* UsersTableViewCell.xib */; };
 		38E8DA1523B75309008674BF /* RepositoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8DA1323B75309008674BF /* RepositoryViewController.swift */; };
 		38E8DA1623B75309008674BF /* RepositoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38E8DA1423B75309008674BF /* RepositoryViewController.xib */; };
+		38E8DA1823B79611008674BF /* RepositoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8DA1723B79611008674BF /* RepositoryViewModel.swift */; };
+		38E8DA1A23B79C20008674BF /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E8DA1923B79C20008674BF /* Repository.swift */; };
 		9323B517C44CE0F61D5DC185 /* Pods_Github_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F712E8CB835DBD471D4096D /* Pods_Github_App.framework */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +51,8 @@
 		38E8DA0F23B737EC008674BF /* UsersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UsersTableViewCell.xib; sourceTree = "<group>"; };
 		38E8DA1323B75309008674BF /* RepositoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryViewController.swift; sourceTree = "<group>"; };
 		38E8DA1423B75309008674BF /* RepositoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RepositoryViewController.xib; sourceTree = "<group>"; };
+		38E8DA1723B79611008674BF /* RepositoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryViewModel.swift; sourceTree = "<group>"; };
+		38E8DA1923B79C20008674BF /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		9F712E8CB835DBD471D4096D /* Pods_Github_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Github_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -159,6 +163,8 @@
 			children = (
 				38E8DA1323B75309008674BF /* RepositoryViewController.swift */,
 				38E8DA1423B75309008674BF /* RepositoryViewController.xib */,
+				38E8DA1723B79611008674BF /* RepositoryViewModel.swift */,
+				38E8DA1923B79C20008674BF /* Repository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -301,6 +307,8 @@
 				388EE37623B4FD6200FD802D /* SceneDelegate.swift in Sources */,
 				38E8DA1023B737EC008674BF /* UsersTableViewCell.swift in Sources */,
 				388EE37823B4FD6200FD802D /* ContentView.swift in Sources */,
+				38E8DA1823B79611008674BF /* RepositoryViewModel.swift in Sources */,
+				38E8DA1A23B79C20008674BF /* Repository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
