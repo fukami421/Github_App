@@ -14,6 +14,7 @@ class SearchUserViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    fileprivate let repositoryVC = RepositoryViewController.init(nibName: nil, bundle: nil)
 
     fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
     private let disposeBag = DisposeBag()
@@ -37,6 +38,11 @@ class SearchUserViewController: UIViewController {
         self.viewModel.searchResultText
             .bind(to: self.rx.title)
             .disposed(by: disposeBag)
+
+        // セル選択時の処理をViewModelにbind
+        self.tableView.rx.itemSelected
+            .bind(to: self.viewModel.itemSelected)
+            .disposed(by: disposeBag)
         
         // 検索結果をtableのcellにbind
         self.viewModel.outputs.users
@@ -55,6 +61,14 @@ class SearchUserViewController: UIViewController {
                 return cell
         }
         .disposed(by: self.disposeBag)
+        
+        // 選択されたユーザーのリポジトリを表示するViewに遷移
+        self.viewModel.userName
+            .bind(to: Binder(self) { _, name in
+                self.repositoryVC.title = name // 遷移先のViewのtitleをユーザー名にする
+                self.navigationController?.pushViewController(self.repositoryVC, animated: true) //遷移する
+            })
+            .disposed(by: disposeBag)
     }
 }
 

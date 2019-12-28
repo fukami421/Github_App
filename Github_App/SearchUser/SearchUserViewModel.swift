@@ -19,6 +19,7 @@ protocol SearchUserViewModelInputs {
 protocol SearchUserViewModelOutputs {
     var searchResultText: Observable<String> { get }
     var users: Observable<[SearchUser.Item]> { get }
+    var userName: Observable<String> { get }
 }
 
 protocol SearchUserViewModelType {
@@ -38,6 +39,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     
     let searchResultText: Observable<String>
     let users: Observable<[SearchUser.Item]>
+    let userName: Observable<String>
     
     private let disposeBag   = DisposeBag()
     
@@ -62,13 +64,15 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
         }
         
         // Ouputのpropertyの初期化
-        let _users = BehaviorRelay<[SearchUser.Item]>(value: [])
-        self.users = _users.asObservable()
-
-
         let _searchResultText = BehaviorRelay<String>(value: "Github Search API")
         self.searchResultText = _searchResultText.asObservable().map{"User検索結果: " + $0 + "件"}
         
+        let _users = BehaviorRelay<[SearchUser.Item]>(value: [])
+        self.users = _users.asObservable()
+
+        let _userName = PublishRelay<String>()
+        self.userName = _userName.asObservable()
+
         // APIへのリクエスト
         _searchText
             .filter{ $0.count > 0 }
@@ -77,6 +81,18 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                 self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText)
             })
             .disposed(by: self.disposeBag)
+        
+        // Itemが選択されたら、該当のindexのPageのURLを取り出す
+        _itemSelected
+            .withLatestFrom(_users) { ($0.row, $1) }
+            .flatMap { index, users -> Observable<String> in
+                guard index < users.count else {
+                    return .empty()
+                }
+                return .just(users[index].login)
+            }
+            .bind(to: _userName)
+            .disposed(by: disposeBag)
     }
 
     
