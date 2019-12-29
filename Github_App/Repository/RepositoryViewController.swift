@@ -14,6 +14,8 @@ class RepositoryViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    let activityIndicator = UIActivityIndicatorView()
+    
     public var userName = BehaviorRelay<String>(value: "")
     fileprivate let viewModel: RepositoryViewModel = RepositoryViewModel()
     private let disposeBag = DisposeBag()
@@ -21,6 +23,9 @@ class RepositoryViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.activityIndicator.center = self.view.center
+        self.activityIndicator.startAnimating()
+        self.view.addSubview(self.activityIndicator)
         self.userName.accept(self.title!)
         self.bindViewModel()
     }

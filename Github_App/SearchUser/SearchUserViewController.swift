@@ -34,13 +34,13 @@ class SearchUserViewController: UIViewController {
             .disposed(by: self.disposeBag)
         
         // 検索結果の個数をtitleにbind
-        self.viewModel.searchResultText
+        self.viewModel.outputs.searchResultText
             .bind(to: self.rx.title)
             .disposed(by: disposeBag)
 
         // セル選択時の処理をViewModelにbind
         self.tableView.rx.itemSelected
-            .bind(to: self.viewModel.itemSelected)
+            .bind(to: self.viewModel.inputs.itemSelected)
             .disposed(by: disposeBag)
         
         // 検索結果をtableのcellにbind
@@ -62,7 +62,7 @@ class SearchUserViewController: UIViewController {
         .disposed(by: self.disposeBag)
         
         // 選択されたユーザーのリポジトリを表示するViewに遷移
-        self.viewModel.userName
+        self.viewModel.outputs.userName
             .bind(to: Binder(self) { _, name in
                 var repositoryVC: RepositoryViewController? = RepositoryViewController.init(nibName: nil, bundle: nil)
 

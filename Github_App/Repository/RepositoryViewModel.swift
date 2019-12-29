@@ -20,6 +20,7 @@ protocol RepositoryViewModelInputs {
 protocol RepositoryViewModelOutputs {
     var searchResultText: Observable<String> { get }
     var repositories: Observable<[Repository]> { get }
+    var isLoading: Observable<Bool>{ get }
 }
 
 protocol RepositoryViewModelType {
@@ -40,6 +41,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
     
     let searchResultText: Observable<String>
     let repositories: Observable<[Repository]>
+    let isLoading: Observable<Bool>
     
     private let disposeBag   = DisposeBag()
     
@@ -80,12 +82,17 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
         let _repositories = BehaviorRelay<[Repository]>(value: [])
         self.repositories = _repositories.asObservable()
 
+        let _isLoading = PublishRelay<Bool>()
+        self.isLoading = _isLoading.asObservable()
+
         // APIへのリクエスト
         _userName
             .filter{ $0.count > 0 }
 //            .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
+                _isLoading.accept(true)
                 self.showRepository(repositories: _repositories, userName: _userName.value)
+                _isLoading.accept(false)
             })
             .disposed(by: self.disposeBag)
         
