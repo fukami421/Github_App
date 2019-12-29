@@ -44,6 +44,11 @@ class RepositoryViewController: UIViewController {
             .bind(to: self.viewModel.inputs.userName)
             .disposed(by: self.disposeBag)
         
+        // セル選択時の処理をViewModelにbind
+        self.tableView.rx.itemSelected
+            .bind(to: self.viewModel.inputs.itemSelected)
+            .disposed(by: disposeBag)
+
         // 検索結果をtableのcellにbind
         self.viewModel.outputs.repositories
             .filter{ $0.count > 0 }
@@ -53,7 +58,17 @@ class RepositoryViewController: UIViewController {
                 return cell
         }
         .disposed(by: self.disposeBag)
-        
+
+        // 選択されたリポジトリのWebViewに遷移
+        self.viewModel.outputs.repository_url
+            .bind(to: Binder(self) { _, url in
+                var webVC: WebViewController? = WebViewController.init(nibName: nil, bundle: nil)
+                webVC?.repository_url = URL(string: url)
+                self.navigationController?.pushViewController(webVC!, animated: true) //遷移する
+                webVC = nil // メモリリークを防ぐ
+            })
+            .disposed(by: disposeBag)
+
         // 検索中にActivityIndicatorを回す
         self.viewModel.outputs.isLoading
             .bind(to: self.activityIndicator.rx.isHidden)

@@ -12,4 +12,5 @@ struct Repository: Codable {
     let name: String
     let description: String = "" // nullである場合があるため初期値を設定
     let url: String
+    let html_url: String
 }

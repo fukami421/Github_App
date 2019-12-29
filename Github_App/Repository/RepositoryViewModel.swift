@@ -21,6 +21,7 @@ protocol RepositoryViewModelOutputs {
     var searchResultText: Observable<String> { get }
     var repositories: Observable<[Repository]> { get }
     var isLoading: Observable<Bool>{ get }
+    var repository_url: Observable<String> { get }
 }
 
 protocol RepositoryViewModelType {
@@ -42,6 +43,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
     let searchResultText: Observable<String>
     let repositories: Observable<[Repository]>
     let isLoading: Observable<Bool>
+    let repository_url: Observable<String>
     
     private let disposeBag   = DisposeBag()
     
@@ -85,6 +87,9 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
         let _isLoading = BehaviorRelay<Bool>(value: false)
         self.isLoading = _isLoading.asObservable()
 
+        let _repository_url = PublishRelay<String>()
+        self.repository_url = _repository_url.asObservable()
+
         // APIへのリクエスト
         _userName
             .filter{ $0.count > 0 }
@@ -96,16 +101,17 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
         
         
         // Itemが選択されたら、該当のindexのPageのURLを取り出す
-//        _itemSelected
-//            .withLatestFrom(_users) { ($0.row, $1) }
-//            .flatMap { index, users -> Observable<String> in
-//                guard index < users.count else {
-//                    return .empty()
-//                }
-//                return .just(users[index].login)
-//            }
-//            .bind(to: _userName)
-//            .disposed(by: disposeBag)
+        _itemSelected
+            .filter{ $0.count > 0 }
+            .withLatestFrom(_repositories) { ($0.row, $1) }
+            .flatMap { index, repositories -> Observable<String> in
+                guard index < repositories.count else {
+                    return .empty()
+                }
+                return .just(repositories[index].html_url)
+            }
+            .bind(to: _repository_url)
+            .disposed(by: disposeBag)
     }
 
     
