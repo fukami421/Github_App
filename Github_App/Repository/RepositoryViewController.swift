@@ -53,8 +53,9 @@ class RepositoryViewController: UIViewController {
         self.viewModel.outputs.repositories
             .filter{ $0.count > 0 }
             .bind(to: self.tableView.rx.items){tableView, row, element in
-                let cell = UITableViewCell(style: .default, reuseIdentifier: "myCell")
+                let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "myCell")
                 cell.textLabel?.text = element.name
+                cell.detailTextLabel?.text = element.description
                 return cell
         }
         .disposed(by: self.disposeBag)
