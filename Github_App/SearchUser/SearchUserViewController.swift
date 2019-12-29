@@ -14,6 +14,7 @@ class SearchUserViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    let activityIndicator = UIActivityIndicatorView()
 
     fileprivate let viewModel: SearchUserViewModel = SearchUserViewModel()
     private let disposeBag = DisposeBag()
@@ -21,9 +22,15 @@ class SearchUserViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindViewModel()
         self.title = "Search User"
         self.tableView.register(UINib(nibName: "UsersTableViewCell", bundle: nil), forCellReuseIdentifier: "UsersTableViewCell")
+
+        self.activityIndicator.center = self.view.center
+        self.activityIndicator.startAnimating()
+        self.view.addSubview(self.activityIndicator)
+
+        self.bindViewModel()
+
     }
     
     private func bindViewModel()
@@ -71,6 +78,11 @@ class SearchUserViewController: UIViewController {
                 repositoryVC = nil // メモリリークを防ぐ
             })
             .disposed(by: disposeBag)
+        
+        // 検索中にActivityIndicatorを回す
+        self.viewModel.outputs.isLoading
+            .bind(to: self.activityIndicator.rx.isHidden)
+            .disposed(by: self.disposeBag)
     }
 }
 

@@ -23,9 +23,11 @@ class RepositoryViewController: UIViewController {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.activityIndicator.center = self.view.center
         self.activityIndicator.startAnimating()
         self.view.addSubview(self.activityIndicator)
+
         self.userName.accept(self.title!)
         self.bindViewModel()
     }
@@ -51,5 +53,10 @@ class RepositoryViewController: UIViewController {
                 return cell
         }
         .disposed(by: self.disposeBag)
+        
+        // 検索中にActivityIndicatorを回す
+        self.viewModel.outputs.isLoading
+            .bind(to: self.activityIndicator.rx.isHidden)
+            .disposed(by: self.disposeBag)
     }
 }

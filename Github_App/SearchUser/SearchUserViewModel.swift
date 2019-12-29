@@ -20,6 +20,7 @@ protocol SearchUserViewModelOutputs {
     var searchResultText: Observable<String> { get }
     var users: Observable<[SearchUser.Item]> { get }
     var userName: Observable<String> { get }
+    var isLoading: Observable<Bool>{ get }
 }
 
 protocol SearchUserViewModelType {
@@ -40,7 +41,8 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     let searchResultText: Observable<String>
     let users: Observable<[SearchUser.Item]>
     let userName: Observable<String>
-    
+    let isLoading: Observable<Bool>
+
     private let disposeBag   = DisposeBag()
     
     // MARK: - Initializers
@@ -73,12 +75,15 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
         let _userName = PublishRelay<String>()
         self.userName = _userName.asObservable()
 
+        let _isLoading = BehaviorRelay<Bool>(value: true)
+        self.isLoading = _isLoading.asObservable()
+
         // APIへのリクエスト
         _searchText
             .filter{ $0.count > 0 }
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
-                self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText)
+                self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
         
@@ -97,10 +102,11 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
 
     
     // MARK: - Functions
-    func api(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>)
+    func api(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
     {
         let url = "https://api.github.com/search/users?q=" + searchText
         var usersItem: [SearchUser.Item] = []
+        isLoading.accept(false)
         Alamofire.request(url, method: .get, parameters: nil)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
@@ -120,6 +126,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                             usersItem.append(item)
                         }
                         users.accept(usersItem)
+                        isLoading.accept(true)
                     } catch {
                         print("error:")
                         print(error)

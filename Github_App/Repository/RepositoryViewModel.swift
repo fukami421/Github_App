@@ -82,7 +82,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
         let _repositories = BehaviorRelay<[Repository]>(value: [])
         self.repositories = _repositories.asObservable()
 
-        let _isLoading = PublishRelay<Bool>()
+        let _isLoading = BehaviorRelay<Bool>(value: false)
         self.isLoading = _isLoading.asObservable()
 
         // APIへのリクエスト
@@ -90,9 +90,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
             .filter{ $0.count > 0 }
 //            .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
-                _isLoading.accept(true)
-                self.showRepository(repositories: _repositories, userName: _userName.value)
-                _isLoading.accept(false)
+                self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
         
@@ -112,10 +110,12 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
 
     
     // MARK: - Functions
-    fileprivate func searchRepository(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>)
+    fileprivate func searchRepository(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
     {
         let url = "https://api.github.com/users/fukami421/repos"
         var usersItem: [SearchUser.Item] = []
+        DispatchQueue.global(qos: .default).async {
+            isLoading.accept(false)
         Alamofire.request(url, method: .get, parameters: nil)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
@@ -143,20 +143,26 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                     print("Failure!")
                     searchResult.accept(String(0))
             }
+            }
+            DispatchQueue.main.async {
+                isLoading.accept(true)
+            }
         }
     }
     
-    fileprivate func showRepository(repositories: BehaviorRelay<[Repository]>, userName: String)
+    fileprivate func showRepository(repositories: BehaviorRelay<[Repository]>, userName: String, isLoading: BehaviorRelay<Bool>)
     {
         let url = "https://api.github.com/users/" + userName + "/repos"
         var repositoriesItems: [Repository] = []
+        isLoading.accept(false)
+
         Alamofire.request(url, method: .get, parameters: nil)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
         .responseJSON { response in
             switch response.result {
                 case .success:
-                    print("success!")
+                    print("showRepository API success!")
                     guard let data = response.data else {
                         return
                     }
@@ -168,7 +174,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                             repositoriesItems.append(item)
                         }
                         repositories.accept(repositoriesItems)
-                        print(repositories.value)
+                        isLoading.accept(true)
                     } catch {
                         print("error:")
                         print(error)
@@ -177,6 +183,5 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                     print("Failure!")
             }
         }
-
     }
 }
