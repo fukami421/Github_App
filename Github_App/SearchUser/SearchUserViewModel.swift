@@ -14,6 +14,7 @@ import Alamofire
 protocol SearchUserViewModelInputs {
     var searchText: AnyObserver<String?>{ get }
     var itemSelected: AnyObserver<IndexPath>{ get }
+    var distanceToBottom: AnyObserver<Double>{ get }
 }
 
 protocol SearchUserViewModelOutputs {
@@ -37,6 +38,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
 
     let searchText: AnyObserver<String?>
     let itemSelected: AnyObserver<IndexPath>
+    let distanceToBottom: AnyObserver<Double>
     
     let searchResultText: Observable<String>
     let users: Observable<[SearchUser.Item]>
@@ -44,6 +46,8 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     let isLoading: Observable<Bool>
 
     private let disposeBag   = DisposeBag()
+    private var pageIndex: Int = 1
+    private var pageEnd: Bool = false
     
     // MARK: - Initializers
     init() {
@@ -65,9 +69,18 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             _itemSelected.accept(indexPath)
         }
         
+        let _distanceToBottom = PublishRelay<Double>()
+        self.distanceToBottom = AnyObserver<Double> { event in
+            guard let distance = event.element else {
+                return
+            }
+            print(distance)
+            _distanceToBottom.accept(distance)
+        }
+        
         // Ouputのpropertyの初期化
-        let _searchResultText = BehaviorRelay<String>(value: "Github Search API")
-        self.searchResultText = _searchResultText.asObservable().map{"User検索結果: " + $0 + "件"}
+        let _searchResultText = BehaviorRelay<String>(value: "")
+        self.searchResultText = _searchResultText.asObservable().filter{ $0 != "" }.map{"User検索結果: " + $0 + "件"}
         
         let _users = BehaviorRelay<[SearchUser.Item]>(value: [])
         self.users = _users.asObservable()
@@ -83,6 +96,8 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             .filter{ $0.count > 0 }
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
+                self.pageIndex = 1
+                self.pageEnd = false
                 self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
@@ -98,15 +113,26 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             }
             .bind(to: _userName)
             .disposed(by: disposeBag)
+        
+        // スクロールできる距離がある一定の距離以下になったらapiを叩く
+        _distanceToBottom
+            .filter{ $0 < 550 && _searchText.value != "" && !self.pageEnd }
+            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
+            .subscribe({ _ in
+                self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
+            })
+            .disposed(by: self.disposeBag)
     }
 
     
     // MARK: - Functions
     func api(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
     {
-        let url = "https://api.github.com/search/users?q=" + searchText
+        let url = "https://api.github.com/search/users?q=" + searchText + "&page=" + String(self.pageIndex) + "&per_page=20"
         var usersItem: [SearchUser.Item] = []
-        isLoading.accept(false)
+        if self.pageIndex == 1{
+            isLoading.accept(false)
+        }
         Alamofire.request(url, method: .get, parameters: nil)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
@@ -125,15 +151,27 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                         {
                             usersItem.append(item)
                         }
-                        users.accept(usersItem)
-                        isLoading.accept(true)
+                        if self.pageIndex == 1
+                        {
+                            users.accept(usersItem)
+                            isLoading.accept(true)
+                        }else
+                        {
+                            users.accept(users.value + usersItem)
+                        }
+                        self.pageIndex += 1
+                        print(Int(searchResult.value)!)
+                        print(Double(searchResult.value)! / 20)
+                        if Int(searchResult.value)! % 20 <= self.pageIndex{ self.pageEnd = true }
                     } catch {
                         print("error:")
                         print(error)
+                        isLoading.accept(true)
                     }
                 case .failure:
                     print("Failure!")
                     searchResult.accept(String(0))
+                    isLoading.accept(true)
             }
         }
     }

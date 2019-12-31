@@ -83,6 +83,32 @@ class SearchUserViewController: UIViewController {
         self.viewModel.outputs.isLoading
             .bind(to: self.activityIndicator.rx.isHidden)
             .disposed(by: self.disposeBag)
+        
+        
+        self.tableView.rx.contentOffset
+            .map {_ in 
+                let currentOffsetY = self.tableView.contentOffset.y
+                let maximumOffset = self.tableView.contentSize.height - self.tableView.frame.height
+                let distanceToBottom = maximumOffset - currentOffsetY
+                return Double(distanceToBottom)
+            }
+            .bind(to: self.viewModel.inputs.distanceToBottom)
+            .disposed(by: self.disposeBag)
+            
+
+//        .map(CGPoint -> Double in )
+//            .subscribe { [unowned self] contentOffset in
+//                let currentOffsetY = self.tableView.contentOffset.y
+//                let maximumOffset = self.tableView.contentSize.height - self.tableView.bounds.size.height
+//                let distanceToBottom = maximumOffset - currentOffsetY
+//                if distanceToBottom < 500 {
+//                    print("rx_contentOffset : \(contentOffset)")
+//                }
+//
+//                self.viewModel.inputs.distanceToBottom
+//                // contentOffset値の変化時に取得
+//            }
+//            .disposed(by: self.disposeBag)
     }
 }
 
