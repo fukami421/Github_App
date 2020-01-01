@@ -74,5 +74,16 @@ class RepositoryViewController: UIViewController {
         self.viewModel.outputs.isLoading
             .bind(to: self.activityIndicator.rx.isHidden)
             .disposed(by: self.disposeBag)
+        
+        // スクロール点とtableViewの最下点の距離をviewModelにbind
+        self.tableView.rx.contentOffset
+            .map {_ in
+                let currentOffsetY = self.tableView.contentOffset.y
+                let maximumOffset = self.tableView.contentSize.height - self.tableView.frame.height
+                let distanceToBottom = maximumOffset - currentOffsetY
+                return Double(distanceToBottom)
+            }
+            .bind(to: self.viewModel.inputs.distanceToBottom)
+            .disposed(by: self.disposeBag)
     }
 }

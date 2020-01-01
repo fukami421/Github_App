@@ -15,6 +15,7 @@ protocol RepositoryViewModelInputs {
     var userName: AnyObserver<String?>{ get }
     var searchText: AnyObserver<String?>{ get }
     var itemSelected: AnyObserver<IndexPath>{ get }
+    var distanceToBottom: AnyObserver<Double>{ get }
 }
 
 protocol RepositoryViewModelOutputs {
@@ -39,14 +40,17 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
     let userName: AnyObserver<String?>
     let searchText: AnyObserver<String?>
     let itemSelected: AnyObserver<IndexPath>
-    
+    let distanceToBottom: AnyObserver<Double>
+
     let searchResultText: Observable<String>
     let repositories: Observable<[Repository]>
     let isLoading: Observable<Bool>
     let repository_url: Observable<String>
     
     private let disposeBag   = DisposeBag()
-    
+    private var pageIndex: Int = 1
+    private var pageEnd: Bool = false
+
     // MARK: - Initializers
     init() {
         // Inputのpropertyの初期化
@@ -76,7 +80,16 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
             }
             _itemSelected.accept(indexPath)
         }
-        
+
+        let _distanceToBottom = PublishRelay<Double>()
+        self.distanceToBottom = AnyObserver<Double> { event in
+            guard let distance = event.element else {
+                return
+            }
+            print(distance)
+            _distanceToBottom.accept(distance)
+        }
+
         // Ouputのpropertyの初期化
         let _searchResultText = BehaviorRelay<String>(value: "Github Search API")
         self.searchResultText = _searchResultText.asObservable().map{"User検索結果: " + $0 + "件"}
@@ -92,10 +105,12 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
 
         // APIへのリクエスト
         _userName
+            .map{ $0.trimmingCharacters(in: .whitespaces) }
             .filter{ $0.count > 0 }
-//            .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
-                self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
+                self.pageIndex = 1
+                self.pageEnd = false
+                    self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
         
@@ -112,6 +127,15 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
             }
             .bind(to: _repository_url)
             .disposed(by: disposeBag)
+
+        // スクロールできる距離がある一定の距離以下になったらapiを叩く
+        _distanceToBottom
+            .filter{ $0 < 550 && !self.pageEnd && self.pageIndex > 1 }
+            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
+            .subscribe({ _ in
+                self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
+            })
+            .disposed(by: self.disposeBag)
     }
 
     
@@ -158,10 +182,12 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
     
     fileprivate func showRepository(repositories: BehaviorRelay<[Repository]>, userName: String, isLoading: BehaviorRelay<Bool>)
     {
-        let url = "https://api.github.com/users/" + userName + "/repos"
+        let url = "https://api.github.com/users/" + userName + "/repos" + "?page=" + String(self.pageIndex) + "&per_page=20"
+        print("url: " + url)
         var repositoriesItems: [Repository] = []
-        isLoading.accept(false)
-
+        if self.pageIndex == 1{
+            isLoading.accept(false)
+        }
         Alamofire.request(url, method: .get, parameters: nil)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
@@ -175,18 +201,34 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                     let decoder = JSONDecoder()
                     do {
                         let items: [Repository] = try decoder.decode([Repository].self, from: data)
+                        if items.count == 0 // 表示できるリポジトリが無くなったらこれ以上APIを叩かないようにself.pageEndにtrueを代入
+                        {
+                            self.pageEnd = true
+                            return
+                        }
                         for item in items
                         {
                             repositoriesItems.append(item)
                         }
-                        repositories.accept(repositoriesItems)
+                        if self.pageIndex == 1
+                        {
+                            repositories.accept(repositoriesItems)
+                            isLoading.accept(true)
+                        }else
+                        {
+                            repositories.accept(repositories.value + repositoriesItems)
+                        }
+                        print("num: " + String(self.pageIndex))
+                        self.pageIndex += 1
                         isLoading.accept(true)
                     } catch {
                         print("error:")
                         print(error)
+                        isLoading.accept(true)
                     }
                 case .failure:
                     print("Failure!")
+                    isLoading.accept(true)
             }
         }
     }

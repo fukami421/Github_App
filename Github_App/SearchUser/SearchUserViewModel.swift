@@ -93,6 +93,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
 
         // APIへのリクエスト
         _searchText
+            .map{ $0.trimmingCharacters(in: .whitespaces) }
             .filter{ $0.count > 0 }
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
@@ -128,7 +129,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     // MARK: - Functions
     func api(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
     {
-        let url = "https://api.github.com/search/users?q=" + searchText + "&page=" + String(self.pageIndex) + "&per_page=20"
+        let url = "https://api.github.com/search/users?q=" + searchText + "&page=" + String(self.pageIndex) + "&per_page=30"
         var usersItem: [SearchUser.Item] = []
         if self.pageIndex == 1{
             isLoading.accept(false)
