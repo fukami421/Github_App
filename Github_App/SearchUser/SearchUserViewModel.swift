@@ -74,7 +74,6 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             guard let distance = event.element else {
                 return
             }
-            print(distance)
             _distanceToBottom.accept(distance)
         }
         

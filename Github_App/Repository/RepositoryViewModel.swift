@@ -19,7 +19,6 @@ protocol RepositoryViewModelInputs {
 }
 
 protocol RepositoryViewModelOutputs {
-    var searchResultText: Observable<String> { get }
     var repositories: Observable<[Repository]> { get }
     var isLoading: Observable<Bool>{ get }
     var repository_url: Observable<String> { get }
@@ -42,7 +41,6 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
     let itemSelected: AnyObserver<IndexPath>
     let distanceToBottom: AnyObserver<Double>
 
-    let searchResultText: Observable<String>
     let repositories: Observable<[Repository]>
     let isLoading: Observable<Bool>
     let repository_url: Observable<String>
@@ -86,14 +84,10 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
             guard let distance = event.element else {
                 return
             }
-            print(distance)
             _distanceToBottom.accept(distance)
         }
 
         // Ouputのpropertyの初期化
-        let _searchResultText = BehaviorRelay<String>(value: "Github Search API")
-        self.searchResultText = _searchResultText.asObservable().map{"User検索結果: " + $0 + "件"}
-        
         let _repositories = BehaviorRelay<[Repository]>(value: [])
         self.repositories = _repositories.asObservable()
 
