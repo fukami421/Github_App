@@ -68,7 +68,7 @@ class SearchUserViewController: UIViewController {
         }
         .disposed(by: self.disposeBag)
         
-        // 選択されたユーザーのリポジトリを表示するViewに遷移
+        // 選択されたユーザーのリポジトリを表示するViewに遷移ためにuserNameをViewにbind
         self.viewModel.outputs.userName
             .bind(to: Binder(self) { _, name in
                 var repositoryVC: RepositoryViewController? = RepositoryViewController.init(nibName: nil, bundle: nil)
@@ -79,12 +79,12 @@ class SearchUserViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        // 検索中にActivityIndicatorを回す
+        // 検索中にActivityIndicatorを回すためにviewModelにbind
         self.viewModel.outputs.isLoading
             .bind(to: self.activityIndicator.rx.isHidden)
             .disposed(by: self.disposeBag)
         
-        
+        // スクロール点とtableViewの最下点の距離をviewModelにbind
         self.tableView.rx.contentOffset
             .map {_ in 
                 let currentOffsetY = self.tableView.contentOffset.y
@@ -94,21 +94,6 @@ class SearchUserViewController: UIViewController {
             }
             .bind(to: self.viewModel.inputs.distanceToBottom)
             .disposed(by: self.disposeBag)
-            
-
-//        .map(CGPoint -> Double in )
-//            .subscribe { [unowned self] contentOffset in
-//                let currentOffsetY = self.tableView.contentOffset.y
-//                let maximumOffset = self.tableView.contentSize.height - self.tableView.bounds.size.height
-//                let distanceToBottom = maximumOffset - currentOffsetY
-//                if distanceToBottom < 500 {
-//                    print("rx_contentOffset : \(contentOffset)")
-//                }
-//
-//                self.viewModel.inputs.distanceToBottom
-//                // contentOffset値の変化時に取得
-//            }
-//            .disposed(by: self.disposeBag)
     }
 }
 
