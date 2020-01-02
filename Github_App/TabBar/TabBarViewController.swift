@@ -15,11 +15,11 @@ class TabBarViewController: UITabBarController {
         let seachVC = UINavigationController(rootViewController: SearchUserViewController.init(nibName: nil, bundle: nil))
         // タブのFooter部分を設定
         seachVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
-//
-//        let secondVC = UINavigationController(rootViewController: SecondViewController.init(nibName: nil, bundle: nil))
-//        // タブのFooter部分を設定
-//        secondVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 1)
+
+        let favoriteVC = UINavigationController(rootViewController: FavoriteViewController.init(nibName: nil, bundle: nil))
+        // タブのFooter部分を設定
+        favoriteVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
         
-        self.viewControllers = [seachVC]
+        self.viewControllers = [seachVC, favoriteVC]
     }
 }

@@ -15,6 +15,7 @@ protocol SearchUserViewModelInputs {
     var searchText: AnyObserver<String?>{ get }
     var itemSelected: AnyObserver<IndexPath>{ get }
     var distanceToBottom: AnyObserver<Double>{ get }
+    var tapFavoriteBtn: AnyObserver<Void>{ get }
 }
 
 protocol SearchUserViewModelOutputs {
@@ -39,6 +40,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     let searchText: AnyObserver<String?>
     let itemSelected: AnyObserver<IndexPath>
     let distanceToBottom: AnyObserver<Double>
+    let tapFavoriteBtn: AnyObserver<Void>
     
     let searchResultText: Observable<String>
     let users: Observable<[SearchUser.Item]>
@@ -75,6 +77,14 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
                 return
             }
             _distanceToBottom.accept(distance)
+        }
+        
+        let _tapFavoriteBtn = PublishRelay<Void>()
+        self.tapFavoriteBtn = AnyObserver<Void> { event in
+            guard let e = event.element else {
+                return
+            }
+            _tapFavoriteBtn.accept(e)
         }
         
         // Ouputのpropertyの初期化
@@ -120,6 +130,13 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
             .subscribe({ _ in
                 self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
+            })
+            .disposed(by: self.disposeBag)
+        
+        // お気に入りボタンがtapされたらお気に入りに追加, 削除処理を行う
+        _tapFavoriteBtn
+            .subscribe({ _ in
+                print("tap")
             })
             .disposed(by: self.disposeBag)
     }

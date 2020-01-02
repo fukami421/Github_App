@@ -64,6 +64,12 @@ class SearchUserViewController: UIViewController {
                      print("Error : \(err.localizedDescription)")
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                
+                // お気に入りボタンを押したことをviewModelにbind
+                cell.favoriteBtn.rx.tap
+                    .bind(to: self.viewModel.inputs.tapFavoriteBtn)
+                    .disposed(by: self.disposeBag)
+                
                 return cell
         }
         .disposed(by: self.disposeBag)

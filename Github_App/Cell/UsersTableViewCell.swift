@@ -7,11 +7,16 @@
 //
 
 import UIKit
+import RxSwift
 
 class UsersTableViewCell: UITableViewCell {
 
     @IBOutlet weak var userNameLbl: UILabel!
     @IBOutlet weak var avatarImg: UIImageView!
+    @IBOutlet weak var favoriteBtn: UIButton!
+    
+    var disposeBag: DisposeBag!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -23,4 +28,9 @@ class UsersTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 再利用時にdisposeBagに溜まっていたものを破棄
+        self.disposeBag = DisposeBag()
+    }
 }
