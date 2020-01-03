@@ -101,15 +101,15 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
         let _isLoading = BehaviorRelay<Bool>(value: true)
         self.isLoading = _isLoading.asObservable()
 
-        // APIへのリクエスト
+        // 検索textを元にAPIへのリクエスト
         _searchText
-            .map{ $0.trimmingCharacters(in: .whitespaces) }
-            .filter{ $0.count > 0 }
+            .map{ $0.trimmingCharacters(in: .whitespaces) } // 前後の空白を削除
+            .filter{ $0.count > 0 } // 文字数が１文字以上の場合のみ
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
                 self.pageIndex = 1
                 self.pageEnd = false
-                self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
+                self.searchUsers(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading) // apiを叩く
             })
             .disposed(by: self.disposeBag)
         
@@ -130,13 +130,12 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             .filter{ $0 < 550 && _searchText.value != "" && !self.pageEnd }
             .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
             .subscribe({ _ in
-                self.api(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
+                self.searchUsers(users: _users, searchText: _searchText.value, searchResult: _searchResultText, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
         
         // お気に入りボタンがtapされたらお気に入りに追加, 削除処理を行う
         _tapFavoriteBtn
-            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
             .subscribe({ _index in
                 let row = _index.element!
                 var favorites: [Favorite] = Favorite.get()
@@ -163,7 +162,8 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
 
     
     // MARK: - Functions
-    func api(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
+    // インクリメンタルサーチでユーザーを検索する
+    func searchUsers(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
     {
         let url = "https://api.github.com/search/users?q=" + searchText + "&page=" + String(self.pageIndex) + "&per_page=30"
         var usersItem: [SearchUser.Item] = []

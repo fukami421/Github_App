@@ -48,6 +48,7 @@ final class FavoriteUserViewModel: FavoriteViewModelType, FavoriteViewModelInput
     
     // MARK: - Initializers
     init() {
+        // Inputのpropertyの初期化
         let _itemSelected = PublishRelay<IndexPath>()
         self.itemSelected = AnyObserver<IndexPath> { event in
             guard let indexPath = event.element else {
@@ -96,7 +97,6 @@ final class FavoriteUserViewModel: FavoriteViewModelType, FavoriteViewModelInput
         
         // お気に入りボタンがtapされたらお気に入りに追加, 削除処理を行う
         _tapFavoriteBtn
-            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
             .subscribe({ _index in
                 let row = _index.element!
                 var favorites: [Favorite] = Favorite.get()
@@ -120,38 +120,7 @@ final class FavoriteUserViewModel: FavoriteViewModelType, FavoriteViewModelInput
             })
             .disposed(by: self.disposeBag)
         
-//        // お気に入りボタンがtapされたらお気に入りに追加, 削除処理を行う
-//        _tapFavoriteBtn
-//            .subscribe({ _index in
-//                let row = _index.element!
-//                var favorites = [Favorite(user_name: "fukami", avatar_url: "https://avatars2.githubusercontent.com/u/30323742?v=4", is_favorite: true)]
-//                favorites.append(Favorite(user_name: _favoriteUsers.value[row].user_name, avatar_url: _favoriteUsers.value[row].avatar_url, is_favorite: true))
-//
-//                var index = -1
-//                print(favorites)
-//                for favorite in favorites
-//                {
-//                    index += 1
-//                    if favorite.user_name == "ryu1"
-//                    {
-//                        if favorite.is_favorite
-//                        {
-//                            print("あった")
-//                            favorites.remove(at: index)
-//                        }else
-//                        {
-//                            print("なし")
-//                        }
-//                        break
-//                    }
-//                }
-//                print(favorites)
-//                print("tap")
-//                Favorite.save(favorites)
-//            })
-//            .disposed(by: self.disposeBag)
-        
-        //
+        // refreshされたらお気に入りユーザーを正しく表示する
         _refreshTrigger
             .subscribe({ _ in
                 _isRefreshing.accept(true)
@@ -162,6 +131,7 @@ final class FavoriteUserViewModel: FavoriteViewModelType, FavoriteViewModelInput
     }
 
     // MARK: - Functions
+    // 現段階でのお気に入りユーザーの取得
     func refresh(_favoriteUsers: BehaviorRelay<[Favorite]>)
     {
         let favorites = Favorite.get()

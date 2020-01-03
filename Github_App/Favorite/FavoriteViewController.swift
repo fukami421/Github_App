@@ -53,12 +53,26 @@ class FavoriteViewController: UIViewController{
                      print("Error : \(err.localizedDescription)")
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                
+                cell.favoriteBtn.backgroundColor = .yellow
+                cell.isFavorite = true
+
                 // お気に入りボタンを押したことをviewModelにbind
                 cell.favoriteBtn.rx.tap
-                    .map{ row }
+                .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
+                    .map{
+                        if cell.isFavorite
+                        {
+                            cell.favoriteBtn.backgroundColor = .white
+                            cell.isFavorite = false
+                        }else
+                        {
+                            cell.favoriteBtn.backgroundColor = .yellow
+                            cell.isFavorite = true
+                        }
+                        return row
+                    }
                     .bind(to: self.viewModel.inputs.tapFavoriteBtn)
-                    .disposed(by: self.disposeBag)
+                    .disposed(by: cell.disposeBag)
                 
                 return cell
         }
