@@ -33,14 +33,14 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ae4-Yq-gJH">
-                        <rect key="frame" x="243" y="15" width="46" height="30"/>
+                        <rect key="frame" x="251" y="15" width="46" height="30"/>
                         <state key="normal" title="Button"/>
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="Ae4-Yq-gJH" secondAttribute="trailing" constant="31" id="BZM-27-V77"/>
+                    <constraint firstAttribute="trailing" secondItem="Ae4-Yq-gJH" secondAttribute="trailing" constant="23" id="BZM-27-V77"/>
                     <constraint firstItem="gN5-CJ-LVf" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="FkU-Fn-5xV"/>
-                    <constraint firstItem="Ae4-Yq-gJH" firstAttribute="leading" secondItem="gN5-CJ-LVf" secondAttribute="trailing" constant="40" id="GUe-2i-yoW"/>
+                    <constraint firstItem="Ae4-Yq-gJH" firstAttribute="leading" secondItem="gN5-CJ-LVf" secondAttribute="trailing" constant="48" id="GUe-2i-yoW"/>
                     <constraint firstItem="va2-C7-ss4" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="26" id="Ipf-Ol-zLv"/>
                     <constraint firstItem="Ae4-Yq-gJH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="T0g-pV-vh0"/>
                     <constraint firstItem="gN5-CJ-LVf" firstAttribute="leading" secondItem="va2-C7-ss4" secondAttribute="trailing" constant="16" id="dSv-kY-GnQ"/>

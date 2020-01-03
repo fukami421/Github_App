@@ -15,7 +15,7 @@ protocol SearchUserViewModelInputs {
     var searchText: AnyObserver<String?>{ get }
     var itemSelected: AnyObserver<IndexPath>{ get }
     var distanceToBottom: AnyObserver<Double>{ get }
-    var tapFavoriteBtn: AnyObserver<Void>{ get }
+    var tapFavoriteBtn: AnyObserver<Int>{ get }
 }
 
 protocol SearchUserViewModelOutputs {
@@ -40,7 +40,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     let searchText: AnyObserver<String?>
     let itemSelected: AnyObserver<IndexPath>
     let distanceToBottom: AnyObserver<Double>
-    let tapFavoriteBtn: AnyObserver<Void>
+    let tapFavoriteBtn: AnyObserver<Int>
     
     let searchResultText: Observable<String>
     let users: Observable<[SearchUser.Item]>
@@ -50,6 +50,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
     private let disposeBag   = DisposeBag()
     private var pageIndex: Int = 1
     private var pageEnd: Bool = false
+    private let udf = UserDefaults.standard
     
     // MARK: - Initializers
     init() {
@@ -79,8 +80,8 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
             _distanceToBottom.accept(distance)
         }
         
-        let _tapFavoriteBtn = PublishRelay<Void>()
-        self.tapFavoriteBtn = AnyObserver<Void> { event in
+        let _tapFavoriteBtn = PublishRelay<Int>()
+        self.tapFavoriteBtn = AnyObserver<Int> { event in
             guard let e = event.element else {
                 return
             }
@@ -135,8 +136,27 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
         
         // お気に入りボタンがtapされたらお気に入りに追加, 削除処理を行う
         _tapFavoriteBtn
-            .subscribe({ _ in
-                print("tap")
+            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
+            .subscribe({ _index in
+                let row = _index.element!
+                var favorites: [Favorite] = Favorite.get()
+
+                var index = -1
+                for favorite in favorites
+                {
+                    index += 1
+                    if favorite.user_name == _users.value[row].login
+                    {
+                        if favorite.is_favorite
+                        {
+                            favorites.remove(at: index)
+                            Favorite.save(favorites)
+                            return
+                        }
+                    }
+                }
+                favorites.append(Favorite(user_name: _users.value[row].login, avatar_url: _users.value[row].avatar_url, is_favorite: true))
+                Favorite.save(favorites)
             })
             .disposed(by: self.disposeBag)
     }

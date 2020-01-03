@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3815F3F823BD86C300E1995D /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3815F3F623BD86C300E1995D /* FavoriteViewController.swift */; };
 		3815F3F923BD86C300E1995D /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3815F3F723BD86C300E1995D /* FavoriteViewController.xib */; };
+		3815F3FB23BDD8C600E1995D /* Favorite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3815F3FA23BDD8C500E1995D /* Favorite.swift */; };
+		3815F3FD23BDF7B500E1995D /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3815F3FC23BDF7B500E1995D /* FavoriteViewModel.swift */; };
 		388EE37423B4FD6200FD802D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388EE37323B4FD6200FD802D /* AppDelegate.swift */; };
 		388EE37623B4FD6200FD802D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388EE37523B4FD6200FD802D /* SceneDelegate.swift */; };
 		388EE37823B4FD6200FD802D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388EE37723B4FD6200FD802D /* ContentView.swift */; };
@@ -38,6 +40,8 @@
 		1643F2C2B81E5A1C3D57A271 /* Pods-Github_App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Github_App.release.xcconfig"; path = "Target Support Files/Pods-Github_App/Pods-Github_App.release.xcconfig"; sourceTree = "<group>"; };
 		3815F3F623BD86C300E1995D /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		3815F3F723BD86C300E1995D /* FavoriteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoriteViewController.xib; sourceTree = "<group>"; };
+		3815F3FA23BDD8C500E1995D /* Favorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorite.swift; sourceTree = "<group>"; };
+		3815F3FC23BDF7B500E1995D /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
 		388EE37023B4FD6200FD802D /* Github_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Github_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		388EE37323B4FD6200FD802D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		388EE37523B4FD6200FD802D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 			children = (
 				3815F3F623BD86C300E1995D /* FavoriteViewController.swift */,
 				3815F3F723BD86C300E1995D /* FavoriteViewController.xib */,
+				3815F3FA23BDD8C500E1995D /* Favorite.swift */,
+				3815F3FC23BDF7B500E1995D /* FavoriteViewModel.swift */,
 			);
 			path = Favorite;
 			sourceTree = "<group>";
@@ -327,6 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3815F3FB23BDD8C600E1995D /* Favorite.swift in Sources */,
 				38E8DA0C23B70CA4008674BF /* SearchUser.swift in Sources */,
 				38E8DA0723B5107B008674BF /* LoginViewController.swift in Sources */,
 				38E8DA0223B502D6008674BF /* SearchUserViewController.swift in Sources */,
@@ -340,6 +347,7 @@
 				3815F3F823BD86C300E1995D /* FavoriteViewController.swift in Sources */,
 				38E8DA1823B79611008674BF /* RepositoryViewModel.swift in Sources */,
 				38E8DA2323B8BA83008674BF /* WebViewController.swift in Sources */,
+				3815F3FD23BDF7B500E1995D /* FavoriteViewModel.swift in Sources */,
 				38E8DA1A23B79C20008674BF /* Repository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

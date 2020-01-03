@@ -67,6 +67,7 @@ class SearchUserViewController: UIViewController {
                 
                 // お気に入りボタンを押したことをviewModelにbind
                 cell.favoriteBtn.rx.tap
+                    .map{ row }
                     .bind(to: self.viewModel.inputs.tapFavoriteBtn)
                     .disposed(by: self.disposeBag)
                 
