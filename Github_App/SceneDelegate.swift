@@ -28,10 +28,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-
+            
             // 初期起動かどうかで初期画面を切り分ける
-            let isFirst = udf.string(forKey: "oauthToken") ?? ""
-            if isFirst == ""
+            let isNotFirst = udf.bool(forKey: "isNotFirst")
+            
+            if !isNotFirst
             {
                 window.rootViewController = loginVC
             }else

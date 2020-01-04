@@ -27,7 +27,22 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Login"
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+
+        self.setUpUI()
         self.bindViewModel()
+    }
+    
+    private func setUpUI()
+    {
+        let isNotFirst = udf.bool(forKey: "isNotFirst")
+        let oauthToken = udf.string(forKey: "oauthToken") ?? ""
+        if oauthToken == "" && isNotFirst// ログインしていない状態
+        {
+            self.noLoginBtn.isHidden = true
+        }
     }
     
     private func bindViewModel()
@@ -35,6 +50,7 @@ class LoginViewController: UIViewController {
         // GithubのOAuth認証をする
         self.loginBtn.rx.tap
             .subscribe ({ _ in
+                self.udf.set(true, forKey: "isNotFirst")
                 self.oauthswift = OAuth2Swift(
                     consumerKey:    "22b8bc36ee1c097f3f77",
                     consumerSecret: "ffe51515e088a2400fad727cd7aef52cfd8b6831",
@@ -45,7 +61,7 @@ class LoginViewController: UIViewController {
                 
                 let _ = self.oauthswift.authorize(
                     withCallbackURL: URL(string: "Ryu1GitApp://oauth")!,
-                    scope: "", state:"Ryu1GitApp") { result in
+                    scope: "repo", state:"Ryu1GitApp") { result in
                         switch result {
                         case .success(let (credential, _, _)):
                             self.viewModel.saveLoginInfo(access_token: credential.oauthToken)
@@ -64,6 +80,7 @@ class LoginViewController: UIViewController {
         // タブバーを開く
         self.noLoginBtn.rx.tap
             .subscribe({ _ in
+                self.udf.set(true, forKey: "isNotFirst")
                 let tabBarVC = TabBarViewController.init(nibName: nil, bundle: nil)
                 tabBarVC.modalPresentationStyle = .fullScreen
                 self.present(tabBarVC, animated: true, completion: nil)

@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HdX-fo-J0z">
-                    <rect key="frame" x="20" y="144" width="374" height="45"/>
+                    <rect key="frame" x="20" y="143" width="374" height="46"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="45" id="4SO-gS-dmd"/>
                     </constraints>

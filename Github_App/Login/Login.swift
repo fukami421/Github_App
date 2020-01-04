@@ -30,6 +30,6 @@ struct Login: Codable {
             userData = try? PropertyListDecoder().decode(Login.self, from: data)
             return userData!
         }
-        return nil
+        return Login(login: "", avatar_url: "", html_url: "", followers_url: "", following_url: "", repos_url: "", followers: 0, following: 0)
     }
 }

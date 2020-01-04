@@ -22,6 +22,10 @@ class FavoriteViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Favorite User"
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+
         self.tableView.register(UINib(nibName: "UsersTableViewCell", bundle: nil), forCellReuseIdentifier: "UsersTableViewCell")
         self.tableView.refreshControl = self.refreshCtl
 

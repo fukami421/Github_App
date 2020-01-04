@@ -1,9 +1,9 @@
 //
-//  RepositoryViewModel.swift
+//  MyPageViewModel.swift
 //  Github_App
 //
-//  Created by 深見龍一 on 2019/12/28.
-//  Copyright © 2019 深見龍一. All rights reserved.
+//  Created by 深見龍一 on 2020/01/04.
+//  Copyright © 2020 深見龍一. All rights reserved.
 //
 
 import Foundation
@@ -11,54 +11,43 @@ import RxSwift
 import RxCocoa
 import Alamofire
 
-protocol RepositoryViewModelInputs {
-    var userName: AnyObserver<String?>{ get }
+protocol MyPageViewModelInputs {
     var itemSelected: AnyObserver<IndexPath>{ get }
     var distanceToBottom: AnyObserver<Double>{ get }
 }
 
-protocol RepositoryViewModelOutputs {
-    var repositories: Observable<[Repository]> { get }
+protocol MyPageViewModelOutputs {
+    var repositories: Observable<[MyPage]> { get }
     var isLoading: Observable<Bool>{ get }
     var repository_url: Observable<String> { get }
 }
 
-protocol RepositoryViewModelType {
-    var inputs: RepositoryViewModelInputs { get }
-    var outputs: RepositoryViewModelOutputs { get }
+protocol MyPageViewModelType {
+    var inputs: MyPageViewModelInputs { get }
+    var outputs: MyPageViewModelOutputs { get }
 }
 
-final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInputs, RepositoryViewModelOutputs {
-    
+final class MyPageViewModel: MyPageViewModelType, MyPageViewModelInputs, MyPageViewModelOutputs {
 
     // MARK: - Properties
-    var inputs: RepositoryViewModelInputs { return self }
-    var outputs: RepositoryViewModelOutputs { return self }
+    var inputs: MyPageViewModelInputs { return self }
+    var outputs: MyPageViewModelOutputs { return self }
     
-    let userName: AnyObserver<String?>
     let itemSelected: AnyObserver<IndexPath>
     let distanceToBottom: AnyObserver<Double>
 
-    let repositories: Observable<[Repository]>
+    let repositories: Observable<[MyPage]>
     let isLoading: Observable<Bool>
     let repository_url: Observable<String>
     
     private let disposeBag   = DisposeBag()
     private var pageIndex: Int = 1
     private var pageEnd: Bool = false
+    private let udf = UserDefaults.standard
 
     // MARK: - Initializers
     init() {
         // Inputのpropertyの初期化
-        let _userName = BehaviorRelay<String>(value: "")
-        self.userName = AnyObserver<String?>() { event in
-            guard let text = event.element else {
-                return
-            }
-            _userName.accept(text!)
-            print("username: " + text!)
-        }
-        
         let _itemSelected = PublishRelay<IndexPath>()
         self.itemSelected = AnyObserver<IndexPath> { event in
             guard let indexPath = event.element else {
@@ -76,7 +65,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
         }
 
         // Ouputのpropertyの初期化
-        let _repositories = BehaviorRelay<[Repository]>(value: [])
+        let _repositories = BehaviorRelay<[MyPage]>(value: [])
         self.repositories = _repositories.asObservable()
 
         let _isLoading = BehaviorRelay<Bool>(value: false)
@@ -84,18 +73,6 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
 
         let _repository_url = PublishRelay<String>()
         self.repository_url = _repository_url.asObservable()
-
-        // APIへのリクエスト
-        _userName
-            .map{ $0.trimmingCharacters(in: .whitespaces) }
-            .filter{ $0.count > 0 }
-            .subscribe({ value in
-                self.pageIndex = 1
-                self.pageEnd = false
-                    self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
-            })
-            .disposed(by: self.disposeBag)
-        
         
         // Itemが選択されたら、該当のindexのPageのURLを取り出す
         _itemSelected
@@ -105,72 +82,34 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                 guard index < repositories.count else {
                     return .empty()
                 }
-                return .just(repositories[index].html_url)
+                return .just(repositories[index].full_name)
             }
             .bind(to: _repository_url)
             .disposed(by: disposeBag)
 
         // スクロールできる距離がある一定の距離以下になったらapiを叩く
         _distanceToBottom
-            .filter{ $0 < 550 && !self.pageEnd && self.pageIndex > 1 }
+            .filter{ $0 < 550 && !self.pageEnd }
             .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
             .subscribe({ _ in
-                self.showRepository(repositories: _repositories, userName: _userName.value, isLoading: _isLoading)
+                print("実行")
+                self.showRepository(repositories: _repositories, isLoading: _isLoading)
             })
             .disposed(by: self.disposeBag)
     }
 
     
     // MARK: - Functions
-    fileprivate func searchRepository(users: BehaviorRelay<[SearchUser.Item]>, searchText: String, searchResult: BehaviorRelay<String>, isLoading: BehaviorRelay<Bool>)
+    fileprivate func showRepository(repositories: BehaviorRelay<[MyPage]>, isLoading: BehaviorRelay<Bool>)
     {
-        let url = "https://api.github.com/users/fukami421/repos"
-        var usersItem: [SearchUser.Item] = []
-        DispatchQueue.global(qos: .default).async {
-            isLoading.accept(false)
-        Alamofire.request(url, method: .get, parameters: nil)
-        .validate(statusCode: 200..<300)
-        .validate(contentType: ["application/json"])
-        .responseJSON { response in
-            switch response.result {
-                case .success:
-                    print("success!")
-                    guard let data = response.data else {
-                        return
-                    }
-                    let decoder = JSONDecoder()
-                    do {
-                        let tasks: SearchUser = try decoder.decode(SearchUser.self, from: data)
-                        searchResult.accept(String(tasks.total_count))
-                        for item in tasks.items
-                        {
-                            usersItem.append(item)
-                        }
-                        users.accept(usersItem)
-                    } catch {
-                        print("error:")
-                        print(error)
-                    }
-                case .failure:
-                    print("Failure!")
-                    searchResult.accept(String(0))
-            }
-            }
-            DispatchQueue.main.async {
-                isLoading.accept(true)
-            }
-        }
-    }
-    
-    fileprivate func showRepository(repositories: BehaviorRelay<[Repository]>, userName: String, isLoading: BehaviorRelay<Bool>)
-    {
-        let url = "https://api.github.com/users/" + userName + "/repos" + "?page=" + String(self.pageIndex) + "&per_page=20"
-        print("url: " + url)
-        var repositoriesItems: [Repository] = []
-        if self.pageIndex == 1{
-            isLoading.accept(false)
-        }
-        Alamofire.request(url, method: .get, parameters: nil)
+        let url = "https://api.github.com/user/repos"
+        let parameters:[String: Any] = [
+            "access_token": self.udf.string(forKey: "oauthToken")!,
+            "page": self.pageIndex,
+            "per_page": 20
+        ]
+        var repositoriesItems: [MyPage] = []
+        Alamofire.request(url, method: .get, parameters: parameters)
         .validate(statusCode: 200..<300)
         .validate(contentType: ["application/json"])
         .responseJSON { response in
@@ -182,7 +121,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                     }
                     let decoder = JSONDecoder()
                     do {
-                        let items: [Repository] = try decoder.decode([Repository].self, from: data)
+                        let items: [MyPage] = try decoder.decode([MyPage].self, from: data)
                         if items.count == 0 // 表示できるリポジトリが無くなったらこれ以上APIを叩かないようにself.pageEndにtrueを代入
                         {
                             self.pageEnd = true

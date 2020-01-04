@@ -23,6 +23,10 @@ class SearchUserViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Search User"
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+
         self.tableView.register(UINib(nibName: "UsersTableViewCell", bundle: nil), forCellReuseIdentifier: "UsersTableViewCell")
 
         self.activityIndicator.center = self.view.center
@@ -62,6 +66,7 @@ class SearchUserViewController: UIViewController {
                     cell.avatarImg.image = UIImage(data: data)
                 }catch let err {
                      print("Error : \(err.localizedDescription)")
+                    cell.avatarImg.image = UIImage(named: "micky") // 画像が貼れなかった時はミッキーの写真を貼る
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
 

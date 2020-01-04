@@ -28,6 +28,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = UIColor.orange
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+
         self.setUpToolBar()
         self.setUpWebView()
     }
