@@ -7,5 +7,6 @@ target 'Github_App' do
    pod 'Alamofire'
    pod 'RxOptional'
    pod 'RxWebKit'
+   pod 'OAuthSwift'
 end
 

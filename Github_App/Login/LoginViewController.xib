@@ -9,6 +9,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="Github_App" customModuleProvider="target">
             <connections>
+                <outlet property="loginBtn" destination="HdX-fo-J0z" id="EVk-qv-3lX"/>
+                <outlet property="noLoginBtn" destination="06H-Y7-yKl" id="XqT-OC-O4D"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

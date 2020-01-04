@@ -32,6 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-
+    private func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
+        if (url.host == "Ryu1GitApp://oauth/github") {
+            print("callback!!!!!")
+        }
+        return true
+    }
 }
 

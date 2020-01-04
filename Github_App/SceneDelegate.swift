@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import OAuthSwift
 //import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    private let udf = UserDefaults.standard
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -22,12 +23,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create the SwiftUI view that provides the window contents.
 //        let contentView = ContentView()
         let tabBarVC = TabBarViewController.init(nibName: nil, bundle: nil)
+        let loginVC = UINavigationController(rootViewController: LoginViewController.init(nibName: nil, bundle: nil))
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-//            window.rootViewController = UINavigationController(rootViewController: LoginViewController.init(nibName: nil, bundle: nil))
-            window.rootViewController = tabBarVC
+
+            // 初期起動かどうかで初期画面を切り分ける
+            let isFirst = udf.string(forKey: "oauthToken") ?? ""
+            if isFirst == ""
+            {
+                window.rootViewController = loginVC
+            }else
+            {
+                window.rootViewController = tabBarVC
+            }
+            
             self.window = window
             window.makeKeyAndVisible()
         }
@@ -61,6 +72,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    // 認証のために加えたメソッド
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+            guard let url = URLContexts.first?.url else {
+                return
+            }
+            print("delegateやで！！")
+            if (url.host == "oauth") {
+                OAuthSwift.handle(url: url)
+                print("SceneDelegate内callback!!!")
+            }
+    }
 }
 

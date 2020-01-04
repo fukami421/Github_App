@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.9.1)
+  - OAuthSwift (2.1.0)
   - RxCocoa (5.0.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -15,6 +16,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - OAuthSwift
   - RxCocoa
   - RxOptional
   - RxSwift
@@ -23,6 +25,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - OAuthSwift
     - RxCocoa
     - RxOptional
     - RxRelay
@@ -31,12 +34,13 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  OAuthSwift: ab1675598273e04355e0282459c328e65c9ddacd
   RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
   RxOptional: b1fcd60856807a564c0215c2184b8d33e7826dc2
   RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
   RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
   RxWebKit: 9ff7ea0780a093450defc7ff13e218678ebe6e4a
 
-PODFILE CHECKSUM: 3d179a1230a2c60e5fa31b75efd66f8df19b771f
+PODFILE CHECKSUM: 634effc30cf94b092f9c02d42368c51554c9df74
 
 COCOAPODS: 1.8.4

@@ -19,7 +19,11 @@ class TabBarViewController: UITabBarController {
         let favoriteVC = UINavigationController(rootViewController: FavoriteViewController.init(nibName: nil, bundle: nil))
         // タブのFooter部分を設定
         favoriteVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
-        
-        self.viewControllers = [seachVC, favoriteVC]
+
+        let loginVC = UINavigationController(rootViewController: LoginViewController.init(nibName: nil, bundle: nil))
+        // タブのFooter部分を設定
+        loginVC.tabBarItem = UITabBarItem(tabBarSystemItem: .history, tag: 2)
+
+        self.viewControllers = [seachVC, favoriteVC, loginVC]
     }
 }
