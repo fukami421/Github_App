@@ -53,7 +53,7 @@ class LoginViewController: UIViewController {
                 self.udf.set(true, forKey: "isNotFirst")
                 self.oauthswift = OAuth2Swift(
                     consumerKey:    "22b8bc36ee1c097f3f77",
-                    consumerSecret: "ffe51515e088a2400fad727cd7aef52cfd8b6831",
+                    consumerSecret: "consumerSecretを入れる",
                     authorizeUrl:   "https://github.com/login/oauth/authorize",
                     accessTokenUrl: "https://github.com/login/oauth/access_token",
                     responseType:   "code"
