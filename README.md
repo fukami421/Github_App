@@ -15,6 +15,7 @@ This is a sample that was implemented the MVVM Architecture using RxSwift in iOS
 
 #### It is a simple application that the user search  github users and repositories.
 ![users-_2_ (1)](https://user-images.githubusercontent.com/41050625/71780656-b1423800-3008-11ea-8cab-127002d9a39f.gif)
+
 <img width="238" alt="repo" src="https://user-images.githubusercontent.com/41050625/71780721-6d036780-3009-11ea-8846-4087c53ecf5d.png">
 
 
