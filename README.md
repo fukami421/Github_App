@@ -39,7 +39,7 @@ pod install
 You have to get peronal consumerKey and consumerSecret from github and set token to `LoginViewController.swift`
 
 ```LoginViewController.swift
-consumerKey:    "22b8bc36ee1c097f3f77", 
+consumerKey = "consumerKeyを入れる", 
 consumerSecret = "consumerSecretを入れる"
 ```
 
