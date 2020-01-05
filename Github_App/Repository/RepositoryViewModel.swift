@@ -186,6 +186,7 @@ final class RepositoryViewModel: RepositoryViewModelType, RepositoryViewModelInp
                         if items.count == 0 // 表示できるリポジトリが無くなったらこれ以上APIを叩かないようにself.pageEndにtrueを代入
                         {
                             self.pageEnd = true
+                            isLoading.accept(true)
                             return
                         }
                         for item in items
