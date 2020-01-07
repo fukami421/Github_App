@@ -132,11 +132,11 @@ class SearchUserViewController: UIViewController {
             .bind(to: self.viewModel.inputs.distanceToBottom)
             .disposed(by: self.disposeBag)
         
-        // 画面タップでキーボードを閉じる
-        self.tapGesture.rx.event.bind(onNext: { recognizer in
-            self.searchBar.endEditing(true)
-        }).disposed(by: disposeBag)
-                
+//        // 画面タップでキーボードを閉じる
+//        self.tapGesture.rx.event.bind(onNext: { recognizer in
+//            self.searchBar.endEditing(true)
+//        }).disposed(by: disposeBag)
+//                
         // 検索ボタンタップでキーボードを閉じる
         self.searchBar.rx.searchButtonClicked   .bind(onNext: { _ in
             self.searchBar.endEditing(true)
