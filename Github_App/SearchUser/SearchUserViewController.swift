@@ -34,7 +34,7 @@ class SearchUserViewController: UIViewController {
         self.activityIndicator.startAnimating()
         self.view.addSubview(self.activityIndicator)
 
-        self.view.addGestureRecognizer(self.tapGesture)
+//        self.view.addGestureRecognizer(self.tapGesture)
         
         self.bindViewModel()
 
@@ -64,12 +64,19 @@ class SearchUserViewController: UIViewController {
                 let cell: UsersTableViewCell = tableView.dequeueReusableCell(withIdentifier: "UsersTableViewCell")! as! UsersTableViewCell
                 cell.userNameLbl.text = element.login
                 let url = URL(string: element.avatar_url)
-                do {
-                    let data = try Data(contentsOf: url!)
-                    cell.avatarImg.image = UIImage(data: data)
-                }catch let err {
-                     print("Error : \(err.localizedDescription)")
-                    cell.avatarImg.image = UIImage(named: "micky") // 画像が貼れなかった時はミッキーの写真を貼る
+                DispatchQueue.global().async {
+                    do {
+                        let data = try Data(contentsOf: url!)
+                        DispatchQueue.main.async {
+                            cell.avatarImg!.image = UIImage(data: data)
+                        }
+                    }
+                    catch {
+                        DispatchQueue.main.async {
+                             print("Error")
+                            cell.avatarImg!.image = UIImage(named: "micky") // 画像が貼れなかった時はミッキーの写真を貼る
+                        }
+                    }
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
 

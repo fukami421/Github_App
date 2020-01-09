@@ -12,7 +12,7 @@ import RxSwift
 class UsersTableViewCell: UITableViewCell {
 
     @IBOutlet weak var userNameLbl: UILabel!
-    @IBOutlet weak var avatarImg: UIImageView!
+    @IBOutlet weak var avatarImg: UIImageView?
     @IBOutlet weak var favoriteBtn: UIButton!
     
     var isFavorite: Bool = false
@@ -43,5 +43,6 @@ class UsersTableViewCell: UITableViewCell {
         self.disposeBag = DisposeBag()
         self.isFavorite = false
         self.favoriteBtn.backgroundColor = .white
+        self.avatarImg?.image = nil
     }
 }

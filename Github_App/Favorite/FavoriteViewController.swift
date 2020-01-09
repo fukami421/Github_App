@@ -50,11 +50,19 @@ class FavoriteViewController: UIViewController{
                 let cell: UsersTableViewCell = tableView.dequeueReusableCell(withIdentifier: "UsersTableViewCell")! as! UsersTableViewCell
                 cell.userNameLbl.text = element.user_name
                 let url = URL(string: element.avatar_url)
-                do {
-                    let data = try Data(contentsOf: url!)
-                    cell.avatarImg.image = UIImage(data: data)
-                }catch let err {
-                     print("Error : \(err.localizedDescription)")
+                DispatchQueue.global().async {
+                    do {
+                        let data = try Data(contentsOf: url!)
+                        DispatchQueue.main.async {
+                            cell.avatarImg!.image = UIImage(data: data)
+                        }
+                    }
+                    catch {
+                        DispatchQueue.main.async {
+                             print("Error")
+                            cell.avatarImg!.image = UIImage(named: "micky") // 画像が貼れなかった時はミッキーの写真を貼る
+                        }
+                    }
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.favoriteBtn.backgroundColor = .yellow
