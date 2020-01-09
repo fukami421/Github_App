@@ -105,7 +105,7 @@ final class SearchUserViewModel: SearchUserViewModelType, SearchUserViewModelInp
         _searchText
             .map{ $0.trimmingCharacters(in: .whitespaces) } // 前後の空白を削除
             .filter{ $0.count > 0 } // 文字数が１文字以上の場合のみ
-            .debounce(.milliseconds(500), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
+            .debounce(.milliseconds(1000), scheduler: MainScheduler.instance) // 0.5s以上変更がなければ
             .subscribe({ value in
                 self.pageIndex = 1
                 self.pageEnd = false
