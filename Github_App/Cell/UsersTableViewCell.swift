@@ -43,6 +43,6 @@ class UsersTableViewCell: UITableViewCell {
         self.disposeBag = DisposeBag()
         self.isFavorite = false
         self.favoriteBtn.backgroundColor = .white
-        self.avatarImg?.image = nil
+        self.avatarImg?.isHidden = true
     }
 }

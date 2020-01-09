@@ -69,12 +69,14 @@ class SearchUserViewController: UIViewController {
                         let data = try Data(contentsOf: url!)
                         DispatchQueue.main.async {
                             cell.avatarImg!.image = UIImage(data: data)
+                            cell.avatarImg!.isHidden = false
                         }
                     }
                     catch {
                         DispatchQueue.main.async {
                              print("Error")
                             cell.avatarImg!.image = UIImage(named: "micky") // 画像が貼れなかった時はミッキーの写真を貼る
+                            cell.avatarImg!.isHidden = false
                         }
                     }
                 }
